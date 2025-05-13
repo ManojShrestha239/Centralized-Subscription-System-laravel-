@@ -15,23 +15,23 @@
 <body x-data="{ page: 'ecommerce', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }" x-init="darkMode = JSON.parse(localStorage.getItem('darkMode'));
 $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))" :class="{ 'dark bg-gray-900': darkMode === true }">
     <!-- ===== Preloader Start ===== -->
-    @include('dashboard.layouts.preloader')
+    @include('dashboards.layouts.preloader')
     <!-- ===== Preloader End ===== -->
 
     <!-- ===== Page Wrapper Start ===== -->
     <div class="flex h-screen overflow-hidden">
         <!-- ===== Sidebar Start ===== -->
-        @include('dashboard.layouts.sidebar')
+        @include('dashboards.layouts.sidebar')
         <!-- ===== Sidebar End ===== -->
 
         <!-- ===== Content Area Start ===== -->
         <div class="relative flex flex-col flex-1 overflow-x-hidden overflow-y-auto">
             <!-- Small Device Overlay Start -->
-            @include('dashboard.layouts.overlay')
+            @include('dashboards.layouts.overlay')
             <!-- Small Device Overlay End -->
 
             <!-- ===== Header Start ===== -->
-            @include('dashboard.layouts.header')
+            @include('dashboards.layouts.header')
             <!-- ===== Header End ===== -->
 
             <!-- ===== Main Content Start ===== -->
