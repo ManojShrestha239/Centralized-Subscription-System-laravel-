@@ -9,7 +9,7 @@
     <title>
         eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template
     </title>
-    @vite(['resources/css/app.css', 'resources/js/index.js'])
+    @vite(['resources/css/app.css', 'resources/js/index.js', 'resources/js/generate-apiKey.js'])
 </head>
 
 <body x-data="{ page: 'ecommerce', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'sidebarToggle': false, 'scrollTop': false }" x-init="darkMode = JSON.parse(localStorage.getItem('darkMode'));
@@ -34,19 +34,18 @@ $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(valu
             @include('dashboards.layouts.header')
             <!-- ===== Header End ===== -->
 
+            @include('errors.validation')
             <!-- ===== Main Content Start ===== -->
             <main>
-                <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
-                    <div class="grid grid-cols-12 gap-4 md:gap-6">
-                        @yield('content')
-                    </div>
-                </div>
+                @yield('content')
+
             </main>
             <!-- ===== Main Content End ===== -->
         </div>
         <!-- ===== Content Area End ===== -->
     </div>
     <!-- ===== Page Wrapper End ===== -->
+    <script src="//unpkg.com/alpinejs" defer></script>
 </body>
 
 </html>

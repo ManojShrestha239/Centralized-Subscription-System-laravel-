@@ -7,12 +7,14 @@ Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'verified']], function () {
+Route::group(['middleware' => ['auth', 'verified']], function () {
 
     //Dashboard route
-    Route::get('/', function () {
+    Route::get('/dashboard', function () {
         return view('dashboards.dashboard');
     })->name('dashboard');
+
+    Route::resource('clients', \App\Http\Controllers\ClientController::class);
 
     //Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
