@@ -27,8 +27,8 @@ A robust subscription management system built with Laravel 12 and Tailwind CSS v
 ## Installation
 
 1. Clone the repository:
-   git clone https://github.com/yourusername/centralized-subscription-system.git
-   cd centralized-subscription-system
+   `git clone https://github.com/yourusername/centralized-subscription-system.git`
+   `cd centralized-subscription-system`
 
 2. Install PHP dependencies:
    `composer install`
@@ -43,9 +43,9 @@ A robust subscription management system built with Laravel 12 and Tailwind CSS v
    `php artisan key:generate`
 
 6. Configure your database settings in the .env file:
-   DB_DATABASE=your_database_name
-   DB_USERNAME=your_database_username
-   DB_PASSWORD=your_database_password
+   `DB_DATABASE=your_database_name`
+   `DB_USERNAME=your_database_username`
+   `DB_PASSWORD=your_database_password`
 
 7. Run migrations:
    `php artisan migrate --seed`
