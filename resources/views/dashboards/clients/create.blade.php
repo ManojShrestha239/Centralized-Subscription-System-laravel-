@@ -171,7 +171,7 @@
                                     </div>
 
                                     <!-- API KEY Elements -->
-                                    <div>
+                                    {{-- <div>
                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                             API Key
                                         </label>
@@ -211,12 +211,12 @@
                                                 {{ $message }}
                                             </p>
                                         @enderror
-                                    </div>
+                                        <!-- Error Message -->
+                                        <div id="error-message" class="text-theme-xs text-error-500 mt-1.5 hidden">
+                                            Error: Unable to generate API key
+                                        </div>
+                                    </div> --}}
 
-                                    <!-- Error Message -->
-                                    <div id="error-message" class="text-theme-xs text-error-500 mt-1.5 hidden">
-                                        Error: Unable to generate API key
-                                    </div>
 
                                     <!-- Button Elements -->
                                     <div class="flex justify-end w-full gap-5">

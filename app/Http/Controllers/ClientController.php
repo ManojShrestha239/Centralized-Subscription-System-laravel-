@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
@@ -34,7 +36,7 @@ class ClientController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:clients',
             'domain' => 'required|string|max:255|unique:clients',
-            'api_key' => 'required|string|max:255|unique:clients',
+            // 'api_key' => 'required|string|max:255|unique:clients',
             'subscription_expiry_date' => 'required|date|after:' . today()->toDateString()
         ]);
 
@@ -44,7 +46,7 @@ class ClientController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'domain' => $request->domain,
-                'api_key' => $request->api_key,
+                'api_key' => Str::random(40),
                 'subscription_expiry_date' => $request->subscription_expiry_date
             ]);
 
@@ -52,7 +54,8 @@ class ClientController extends Controller
             return redirect()->route('clients.index')->with('success', 'Client created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Something went wrong. Please try again.');
+            return redirect()->back()->with('error', $e->getMessage());
+            // return redirect()->back()->with('error', 'Something went wrong. Please try again.');
         }
     }
 
@@ -88,17 +91,16 @@ class ClientController extends Controller
 
         DB::beginTransaction();
         try {
-            return ['updated' => $client];
-            // Client::create([
-            //     'name' => $request->name,
-            //     'email' => $request->email,
-            //     'domain' => $request->domain,
-            //     'api_key' => $request->api_key,
-            //     'subscription_expiry_date' => $request->subscription_expiry_date
-            // ]);
+            $client->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'domain' => $request->domain,
+                'api_key' => $request->api_key,
+                'subscription_expiry_date' => $request->subscription_expiry_date
+            ]);
 
             DB::commit();
-            return redirect()->route('clients.index')->with('success', 'Client created successfully.');
+            return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Something went wrong. Please try again.');

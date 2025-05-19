@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('domain')->unique();
-            $table->string('api_key')->unique();
+            $table->longText('api_key')->unique();
             $table->date('subscription_expiry_date');
             $table->timestamps();
             $table->softDeletes();

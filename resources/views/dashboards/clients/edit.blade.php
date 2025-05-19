@@ -23,6 +23,7 @@
                             </div>
 
                             <form action="{{ route('clients.update', $client->id) }}" method="post">
+                                @method('PUT')
                                 @csrf
                                 <div class="space-y-6 border-t border-gray-100 p-5 sm:p-6 dark:border-gray-800">
                                     <!-- Name Elements -->
