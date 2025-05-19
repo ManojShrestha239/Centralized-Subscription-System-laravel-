@@ -32,7 +32,7 @@ class SubscriptionController extends Controller
         if (Carbon::parse($client->subscription_expiry_date)->lt($currentDate)) {
             return response()->json(
                 [
-                    "status" => "error",
+                    "status" => "expired",
                     "message" => "Your subscription expired on {$client->subscription_expiry_date}. Please renew your subscription to regain access to our services.",
                     "expiry_date" => "{$client->subscription_expiry_date}",
                     "action_required" => "Renewal"
