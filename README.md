@@ -1,79 +1,125 @@
-<p align="center">
-  <a href="https://laravel.com" target="_blank">
-    <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
-  </a>
-</p>
+# Centralized Subscription System
 
-<p align="center">
-  <a href="https://github.com/your-username/laravel-admin-dashboard/actions"><img src="https://github.com/your-username/laravel-admin-dashboard/workflows/CI/badge.svg" alt="CI"></a>
-  <a href="https://packagist.org/packages/your-vendor/laravel-admin-dashboard"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Downloads"></a>
-  <a href="https://github.com/your-username/laravel-admin-dashboard/releases"><img src="https://img.shields.io/github/v/release/your-username/laravel-admin-dashboard" alt="Release"></a>
-  <a href="LICENSE.md"><img src="https://img.shields.io/github/license/your-username/laravel-admin-dashboard" alt="License"></a>
-</p>
+![Laravel](https://img.shields.io/badge/Laravel-12-FF2D20?logo=laravel)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss)
+![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?logo=php)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
----
+A robust subscription management system built with Laravel 12 and Tailwind CSS v4 that enables centralized control over subscription services across multiple client applications.
 
-## 🚀 Laravel Admin Dashboard with Tailwind CSS v4
+## Features
 
-A clean and minimal **Admin Dashboard** template built with **Laravel** and styled using **Tailwind CSS v4**. This starter template is perfect for quickly scaffolding internal tools, CMS panels, or B2B applications.
+-   **User Authentication**: Secure login and registration system
+-   **Client Management**: Create and manage client domains
+-   **API Key Generation**: Auto-generates 40-character API keys for each client
+-   **Secure Storage**: API keys are stored using Laravel's hashing system
+-   **Subscription Verification**: Middleware for client applications to check subscription status
+-   **Centralized Control**: Single dashboard to manage all subscriptions
 
----
+## Prerequisites
 
-### 🧩 Features
+-   PHP 8.2+
+-   Composer
+-   Node.js 16+
+-   MySQL 5.7+ or MariaDB 10.3+
+-   Laravel 12
 
-- ✅ Laravel 10+
-- 🎨 Tailwind CSS v4 integration
-- 🧱 Component-based UI
-- 🔐 Authentication with Laravel Breeze / Jetstream (optional)
-- 🧭 Responsive Dashboard Layout
-- 📊 Placeholder for charts and analytics
-- 🌗 Light/Dark mode toggle (optional)
-- 🛠 Modular structure for scalability
+## Installation
 
----
+1. Clone the repository:
+   git clone https://github.com/yourusername/centralized-subscription-system.git
+   cd centralized-subscription-system
 
-### 📂 Directory Structure
+2. Install PHP dependencies:
+   `composer install`
 
-```bash
-├── app/
-├── resources/
-│   ├── views/
-│   │   ├── layouts/
-│   │   │   └── admin.blade.php
-│   │   └── dashboard.blade.php
-│   └── css/
-│       └── app.css (Tailwind CSS)
-├── routes/
-│   └── web.php
-└── vite.config.js
-```
-⚙️ Installation
+3. Install JavaScript dependencies:
+   `npm install`
 
-# Clone the repository
-git clone https://github.com/your-username/laravel-admin-dashboard.git](https://github.com/ManojShrestha239/tailwindcss--laravel.git
+4. Create a copy of the .env file:
+   `cp .env.example .env`
 
-cd laravel-admin-dashboard
+5. Generate application key:
+   `php artisan key:generate`
 
-# Install dependencies
-composer install
-npm install && npm run dev
+6. Configure your database settings in the .env file:
+   DB_DATABASE=your_database_name
+   DB_USERNAME=your_database_username
+   DB_PASSWORD=your_database_password
 
-# Copy .env and generate app key
-cp .env.example .env
-php artisan key:generate
+7. Run migrations:
+   `php artisan migrate --seed`
 
-# (Optional) Set up database
-php artisan migrate
+8. Compile assets:
+   `npm run build`
 
-📸 Screenshots
-<p align="center"> <img src="public/screenshots/dashboard.png" alt="Admin Dashboard" width="800"> </p>
+9. Start the development server:
+   `php artisan serve`
 
-📬 Contact
+## Client Application Setup
 
-If you discover a security vulnerability or have suggestions, feel free to open an issue or email manojxtha1000@gmail.com.
+To integrate a client application with the Centralized Subscription System:
 
-⭐️ Show Your Support
+1. Copy the CheckSubscriptionMiddleware.php to your client application's middleware directory.
+2. Add the following configuration to your client's config/services.php:
+   'subscription_api' => [
+   'secret' => env('SUBSCRIPTION_API_KEY'),
+   'domain' => env('APP_URL'),
+   'url' => env('SUBSCRIPTION_API_URL'),
+   'redirect_url' => env('SUBSCRIPTION_API_REDIRECT_URL'),
+   ],
+3. Add these variables to your client's .env file:
+   SUBSCRIPTION_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+   SUBSCRIPTION_API_URL="http://127.0.0.1:8000/"
+   SUBSCRIPTION_API_REDIRECT_URL="https://example.com/checking-subscription/"
+4. Apply the middleware to your routes as needed.
 
-Give a ⭐ on GitHub if this project helped you!
+## API Key Security
 
-Let me know if you'd like help scaffolding the actual dashboard layout or Tailwind setup!
+    - All API keys are automatically generated as 40-character strings
+    - Keys are stored using Laravel's hashing mechanism for security
+    - Never expose raw API keys in your application - always use the hashed version for verification
+
+## Usage
+
+1.  Dashboard Access:
+
+-   Register a new account or login with existing credentials
+-   Access the admin dashboard to manage clients and subscriptions
+
+2.  Client Management:
+
+-   Add new client domains
+-   View and manage generated API keys
+-   Monitor subscription statuses
+
+3.  Subscription Verification:
+
+-   Client applications will automatically verify subscription status
+-   Unauthorized access will be redirected as configured
+
+## Deployment
+
+For production deployment, consider:
+
+1. Configuring proper SSL certificates
+2. Setting up queue workers for background jobs
+3. Implementing a backup strategy for your database
+4. Configuring proper caching mechanisms
+
+Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the project
+2. Create your feature branch (git checkout -b feature/AmazingFeature)
+3. Commit your changes (git commit -m 'Add some AmazingFeature')
+4. Push to the branch (git push origin feature/AmazingFeature)
+5. Open a Pull Request
+
+## License
+
+Distributed under the MIT License. See LICENSE for more information.
+Support
+
+For issues or questions, please open an issue on GitHub or contact the maintainer.
