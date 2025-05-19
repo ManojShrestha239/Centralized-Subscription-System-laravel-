@@ -28,32 +28,33 @@ A robust subscription management system built with Laravel 12 and Tailwind CSS v
 
 1. Clone the repository:
    `git clone https://github.com/yourusername/centralized-subscription-system.git`
+   and
    `cd centralized-subscription-system`
 
-2. Install PHP dependencies:
+3. Install PHP dependencies:
    `composer install`
 
-3. Install JavaScript dependencies:
+4. Install JavaScript dependencies:
    `npm install`
 
-4. Create a copy of the .env file:
+5. Create a copy of the .env file:
    `cp .env.example .env`
 
-5. Generate application key:
+6. Generate application key:
    `php artisan key:generate`
 
-6. Configure your database settings in the .env file:
+7. Configure your database settings in the .env file:
    `DB_DATABASE=your_database_name`
    `DB_USERNAME=your_database_username`
    `DB_PASSWORD=your_database_password`
 
-7. Run migrations:
+8. Run migrations:
    `php artisan migrate --seed`
 
-8. Compile assets:
+9. Compile assets:
    `npm run build`
 
-9. Start the development server:
+10. Start the development server:
    `php artisan serve`
 
 ## Client Application Setup
