@@ -130,10 +130,10 @@
 
                                         <div class="relative">
                                             <input type="date" name="subscription_expiry_date"
-                                                id="subscription_expiry_date"
-                                                value="{{ old('subscription_expiry_date') ?? date('Y-m-d', strtotime('+1 day')) }}"
-                                                placeholder="Select date" min="{{ date('Y-m-d', strtotime('+1 day')) }}"
-                                                max="{{ date('Y-m-d', strtotime('+1 year')) }}"
+                                                id="subscription_expiry_date" x-data-expiry-date="{{ date('Y-m-d') }}"
+                                                value="{{ old('subscription_expiry_date') ?? date('Y-m-d') }}"
+                                                placeholder="Select date" min="{{ date('Y-m-d') }}"
+                                                max="{{ date('Y-m-d', strtotime('+1 years')) }}"
                                                 class="dark:bg-dark-900 shadow-theme-xs w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30
                                                 @error('subscription_expiry_date')
                                                 border-error-300 focus:border-error-300 focus:ring-error-500/10 dark:border-error-700 dark:focus:border-error-800
@@ -163,39 +163,40 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                        @error('subscription_expiry_date')
-                                            <p class="text-theme-xs text-error-500 mt-1.5">
-                                                {{ $message }}
-                                            </p>
-                                        @enderror
                                     </div>
 
-                                    <!-- API KEY Elements -->
-                                    {{-- <div>
+                                    <!-- Subscription Period Elements -->
+                                    <div>
                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                            API Key
+                                            Subscription Period
                                         </label>
+
                                         <div class="relative">
-                                            <input type="text" id="api_key" name="api_key" value="" readonly
+                                            <select name="subscription_period" id="subscription_period"
                                                 class="dark:bg-dark-900 shadow-theme-xs w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30
-                                                @error('api_key')
+                                                @error('subscription_period')
                                                 border-error-300 focus:border-error-300 focus:ring-error-500/10 dark:border-error-700 dark:focus:border-error-800
                                                 @else
-                                                focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11  border-gray-300 dark:border-gray-700
-                                                @enderror" />
-                                            <div class="flex justify-between mt-3">
-                                                <!-- Copy Button -->
-                                                <button id="copyBtn"
-                                                    class="px-4 py-2 bg-blue-500 text-white rounded-lg focus:outline-none hover:bg-blue-600">
-                                                    Copy
-                                                </button>
-                                                <!-- Regenerate Button -->
-                                                <button id="regenBtn"
-                                                    class="px-4 py-2 bg-green-500 text-white rounded-lg focus:outline-none hover:bg-green-600">
-                                                    Regenerate
-                                                </button>
-                                            </div>
-                                            @error('api_key')
+                                                focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 border-gray-300 dark:border-gray-700
+                                                @enderror">
+                                                <option value=""
+                                                    {{ old('subscription_period') == '' ? 'selected' : '' }}>Select a Plan
+                                                </option>
+                                                <option value="1"
+                                                    {{ old('subscription_period') == '1' ? 'selected' : '' }}>1 Month
+                                                </option>
+                                                <option value="3"
+                                                    {{ old('subscription_period') == '3' ? 'selected' : '' }}>3 Months
+                                                </option>
+                                                <option value="6"
+                                                    {{ old('subscription_period') == '6' ? 'selected' : '' }}>6 Months
+                                                </option>
+                                                <option value="12"
+                                                    {{ old('subscription_period') == '12' ? 'selected' : '' }}>1 Year
+                                                </option>
+                                            </select>
+
+                                            @error('subscription_period')
                                                 <span class="absolute top-1/2 right-3.5 -translate-y-1/2">
                                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg">
@@ -204,19 +205,25 @@
                                                             fill="#F04438" />
                                                     </svg>
                                                 </span>
+                                            @else
+                                                <span
+                                                    class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                                    <svg class="fill-current" width="20" height="20"
+                                                        viewBox="0 0 20 20" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" clip-rule="evenodd"
+                                                            d="M5.29289 7.29289C5.68342 6.90237 6.31658 6.90237 6.70711 7.29289L10 10.5858L13.2929 7.29289C13.6834 6.90237 14.3166 6.90237 14.7071 7.29289C15.0976 7.68342 15.0976 8.31658 14.7071 8.70711L10.7071 12.7071C10.3166 13.0976 9.68342 13.0976 9.29289 12.7071L5.29289 8.70711C4.90237 8.31658 4.90237 7.68342 5.29289 7.29289Z"
+                                                            fill=""></path>
+                                                    </svg>
+                                                </span>
                                             @enderror
                                         </div>
-                                        @error('api_key')
+                                        @error('subscription_period')
                                             <p class="text-theme-xs text-error-500 mt-1.5">
                                                 {{ $message }}
                                             </p>
                                         @enderror
-                                        <!-- Error Message -->
-                                        <div id="error-message" class="text-theme-xs text-error-500 mt-1.5 hidden">
-                                            Error: Unable to generate API key
-                                        </div>
-                                    </div> --}}
-
+                                    </div>
 
                                     <!-- Button Elements -->
                                     <div class="flex justify-end w-full gap-5">

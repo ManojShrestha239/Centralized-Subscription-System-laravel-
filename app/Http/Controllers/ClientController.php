@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -37,11 +38,14 @@ class ClientController extends Controller
             'email' => 'required|string|email|max:255|unique:clients',
             'domain' => 'required|string|max:255|unique:clients',
             // 'api_key' => 'required|string|max:255|unique:clients',
-            'subscription_expiry_date' => 'required|date|after:' . today()->toDateString()
+            'subscription_expiry_date' => 'required|date|after:' . today()->toDateString(),
+            'subscription_period' => 'nullable|integer|min:1|in:1,3,6,12',
         ]);
 
         DB::beginTransaction();
         try {
+            $endDate = Carbon::now()->addMonths((int)$request->subscription_period)->format('Y-m-d');
+
             Client::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -86,11 +90,20 @@ class ClientController extends Controller
             'email' => 'required|string|email|max:255|unique:clients,email,' . $client->id,
             'domain' => 'required|string|max:255|unique:clients,domain,' . $client->id,
             'api_key' => 'required|string|max:255|unique:clients,api_key,' . $client->id,
-            'subscription_expiry_date' => 'required|date|after:' . today()->toDateString()
+            'subscription_expiry_date' => 'required|date|after:' . today()->toDateString(),
+            'subscription_period' => 'nullable|integer|min:1|in:1,3,6,12',
         ]);
 
         DB::beginTransaction();
         try {
+            $expiryDate = Carbon::parse($client->subscription_expiry_date);
+
+            if ($expiryDate->isFuture()) {
+                $endDate = $expiryDate->addMonths((int)$request->subscription_period)->format('Y-m-d');
+            } else {
+                $endDate = Carbon::now()->addMonths((int)$request->subscription_period)->format('Y-m-d');
+            }
+
             $client->update([
                 'name' => $request->name,
                 'email' => $request->email,
