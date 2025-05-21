@@ -113,8 +113,158 @@ Follow these steps to set up the project:
 
 To integrate a client application with the Centralized Subscription System:
 
-1. Copy the CheckSubscriptionMiddleware.php to your client application's middleware directory.
-2. Add the following configuration to your client's config/services.php:
+1.  Create a Middleware: Create a new middleware file in your client application's middleware directory (e.g., CheckSubscriptionMiddleware.php) and add the following code
+
+````php
+        class CheckSubscriptionMiddleware
+        {
+        public function handle(Request $request, Closure $next)
+        {
+            if (!$request->secure() && config('app.env') === 'production') {
+        abort(403, 'Secure connection required');
+        }
+
+                $domain = config('services.subscription_api.domain');
+                $apiSecret = config('services.subscription_api.secret');
+
+                if (!$apiSecret || !$domain) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'System configuration error'
+                    ], 500)->withHeaders($this->securityHeaders());
+                }
+
+                $timestamp = now()->timestamp;
+                $nonce = Str::uuid()->toString();
+
+                $signature = hash_hmac(
+                    'sha256',
+                    $timestamp . $domain . $nonce,
+                    $apiSecret
+                );
+                $baseUrl = config('services.subscription_api.url');
+                $endpoint = rtrim($baseUrl, '/') . '/api/check-subscription';
+
+                try {
+                    $response = Http::withHeaders([
+                        'X-API-Signature' => $signature,
+                        'X-API-Timestamp' => $timestamp,
+                        'X-API-Nonce' => $nonce,
+                        'X-API-Domain' => $domain
+                    ])
+                        ->timeout(3)
+                        ->retry(2, 100)
+                        ->post($endpoint, [
+                            'domain' => $domain,
+                            'timestamp' => $timestamp
+                        ]);
+
+                    return $this->handleApiResponse($response, $request, $next);
+                } catch (ConnectionException $e) {
+                    return $this->handleFallbackVerification($request, $next);
+                }
+            }
+
+            private function handleApiResponse($response, $request, $next)
+            {
+                $status = $response->status();
+
+                if ($status === 200 && $response->json('status') === 'active') {
+                    $this->cacheSubscriptionStatus();
+                    return $next($request)->withHeaders($this->securityHeaders());
+                }
+
+                if ($response->json('status') === 'expired') {
+                    $responseData = $response->json();
+                    if (
+                        isset($responseData['status']) && $responseData['status'] === 'expired' &&
+                        isset($responseData['message']) && $responseData['message'] === 'Subscription expired'
+                    ) {
+
+                        $redirectUrl = isset($responseData['redirect_url']) ?
+                            $responseData['redirect_url'] :
+                            config('services.subscription_api.redirect_url');
+
+                        return redirect()->to($redirectUrl);
+                    }
+
+                    return redirect()->to(config('services.subscription_api.redirect_url'));
+                }
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Service temporarily unavailable'
+                ], 503)->withHeaders($this->securityHeaders());
+            }
+
+            private function securityHeaders()
+            {
+                return [
+                    'Strict-Transport-Security' => 'max-age=31536000; includeSubDomains',
+                    'X-Content-Type-Options' => 'nosniff',
+                    'X-Frame-Options' => 'DENY',
+                    // 'Content-Security-Policy' => "default-src 'self'"
+                ];
+            }
+
+            private function handleFallbackVerification($request, $next)
+            {
+                $domain = config('services.subscription_api.domain');
+                $lastVerified = Cache::get('subscription_status_' . md5($domain));
+
+                if ($lastVerified && $lastVerified['expires_at'] > now()) {
+                    return $next($request);
+                }
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Service unavailable'
+                ], 503)->withHeaders($this->securityHeaders());
+            }
+
+            private function cacheSubscriptionStatus()
+            {
+                $domain = config('services.subscription_api.domain');
+                Cache::put(
+                    'subscription_status_' . md5($domain),
+                    ['expires_at' => now()->addMinutes(5)],
+                    300
+                );
+            }
+
+        }
+        ```
+
+2.  Register the Middleware Alias:
+    Open your app/Http/Kernel.php file and register the middleware alias in the $routeMiddleware array:
+
+```php
+protected $routeMiddleware = [
+    // ...existing middleware...
+    'check.subscription' => \App\Http\Middleware\CheckSubscriptionMiddleware::class,
+];
+````
+
+3. Apply Middleware Globally (Optional):
+   If you want to apply the middleware to all routes, add it to the $middleware array in the same file:
+
+```php
+protected $middleware = [
+    // ...existing middleware...
+    \App\Http\Middleware\CheckSubscriptionMiddleware::class,
+];
+```
+
+4. Apply Middleware to Specific Routes:
+   If you prefer to apply the middleware to specific routes, use the alias in your route definitions:
+
+```php
+Route::middleware(['check.subscription'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+});
+```
+
+5.  Add the following configuration to your client's config/services.php:
     ```php
     'subscription_api' => [
         'secret' => env('SUBSCRIPTION_API_KEY'),
@@ -123,13 +273,13 @@ To integrate a client application with the Centralized Subscription System:
         'redirect_url' => env('SUBSCRIPTION_API_REDIRECT_URL'),
     ],
     ```
-3. Add these variables to your client's .env file:
+6.  Add these variables to your client's .env file:
     ```dotenv
-    SUBSCRIPTION_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    SUBSCRIPTION_API_KEY="xxxxxxxxAPI_KEYxxxxxxxx"
     SUBSCRIPTION_API_URL="http://127.0.0.1:8000/"
     SUBSCRIPTION_API_REDIRECT_URL="https://example.com/checking-subscription/"
     ```
-4. Apply the middleware to your routes as needed.
+7.  Apply the middleware to your routes as needed.
 
 ---
 
