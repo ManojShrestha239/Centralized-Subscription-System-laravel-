@@ -115,7 +115,7 @@ To integrate a client application with the Centralized Subscription System:
 
 1.  Create a Middleware: Create a new middleware file in your client application's middleware directory (e.g., CheckSubscriptionMiddleware.php) and add the following code
 
-````php
+    ```php
         class CheckSubscriptionMiddleware
         {
         public function handle(Request $request, Closure $next)
@@ -233,17 +233,17 @@ To integrate a client application with the Centralized Subscription System:
             }
 
         }
-        ```
 
-2.  Register the Middleware Alias:
-    Open your app/Http/Kernel.php file and register the middleware alias in the $routeMiddleware array:
+    ```
+
+2.  Register the Middleware Alias: Open your app/Http/Kernel.php file and register the middleware alias in the $routeMiddleware array
 
 ```php
 protected $routeMiddleware = [
     // ...existing middleware...
     'check.subscription' => \App\Http\Middleware\CheckSubscriptionMiddleware::class,
 ];
-````
+```
 
 3. Apply Middleware Globally (Optional):
    If you want to apply the middleware to all routes, add it to the $middleware array in the same file:
