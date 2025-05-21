@@ -26,7 +26,7 @@ A robust subscription management system built with Laravel 12 and Tailwind CSS v
 
 ## Installation
 
-1. Clone the repository:
+1. Clone the repository:<br>
    `git clone https://github.com/yourusername/centralized-subscription-system.git`
    and
    `cd centralized-subscription-system`
