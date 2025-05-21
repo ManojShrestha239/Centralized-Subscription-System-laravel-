@@ -43,7 +43,7 @@ A robust subscription management system built with Laravel 12 and Tailwind CSS v
 6. Generate application key:
    `php artisan key:generate`
 
-7. Configure your database settings in the .env file:
+7. Configure your database settings in the .env file:  
    `DB_DATABASE=your_database_name`
    `DB_USERNAME=your_database_username`
    `DB_PASSWORD=your_database_password`
@@ -62,8 +62,10 @@ A robust subscription management system built with Laravel 12 and Tailwind CSS v
 To integrate a client application with the Centralized Subscription System:
 
 1	Copy the CheckSubscriptionMiddleware.php to your client application's middleware directory.
-2	Add the following configuration to your client's config/services.php: 'subscription_api' => [ 'secret' => env('SUBSCRIPTION_API_KEY'), 'domain' => env('APP_URL'), 'url' => env('SUBSCRIPTION_API_URL'), 'redirect_url' => env('SUBSCRIPTION_API_REDIRECT_URL'), ],
-3	Add these variables to your client's .env file: SUBSCRIPTION_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" SUBSCRIPTION_API_URL="http://127.0.0.1:8000/" SUBSCRIPTION_API_REDIRECT_URL="https://example.com/checking-subscription/"
+2	Add the following configuration to your client's config/services.php:  
+    `'subscription_api' => [ 'secret' => env('SUBSCRIPTION_API_KEY'), 'domain' => env('APP_URL'), 'url' => env('SUBSCRIPTION_API_URL'), 'redirect_url' => env('SUBSCRIPTION_API_REDIRECT_URL'), ],`
+3	Add these variables to your client's .env file:  
+   `SUBSCRIPTION_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" SUBSCRIPTION_API_URL="http://127.0.0.1:8000/" SUBSCRIPTION_API_REDIRECT_URL="https://example.com/checking-subscription/"`
 4	Apply the middleware to your routes as needed.
 
 ## API Key Security
